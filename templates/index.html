@@ -1,0 +1,707 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hotel Booking Chatbot</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #e3f2fd 0%, #f1f8e9 100%);
+            min-height: 100vh;
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .container {
+            max-width: 650px;
+            width: 100%;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .header {
+            background: linear-gradient(135deg, #2196F3, #4CAF50);
+            color: white;
+            padding: 25px;
+            text-align: center;
+            position: relative;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: url('data:image/svg+xml,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 100 100"><circle cx="20" cy="20" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="80" cy="40" r="2" fill="rgba(255,255,255,0.1)"/><circle cx="40" cy="80" r="2" fill="rgba(255,255,255,0.1)"/></svg>');
+        }
+
+        .header h1 {
+            font-size: 28px;
+            margin-bottom: 8px;
+            font-weight: 600;
+            position: relative;
+            z-index: 1;
+        }
+
+        .header p {
+            font-size: 15px;
+            opacity: 0.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .chat-container {
+            height: 500px;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            background: #f8f9fa;
+            scroll-behavior: smooth;
+        }
+
+        .chat-messages::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .chat-messages::-webkit-scrollbar-track {
+            background: #f1f1f1;
+            border-radius: 3px;
+        }
+
+        .chat-messages::-webkit-scrollbar-thumb {
+            background: #c1c1c1;
+            border-radius: 3px;
+        }
+
+        .message {
+            margin-bottom: 16px;
+            display: flex;
+            gap: 10px;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .user-message {
+            justify-content: flex-end;
+        }
+
+        .bot-message {
+            justify-content: flex-start;
+        }
+
+        .message-content {
+            max-width: 75%;
+            padding: 14px 18px;
+            border-radius: 20px;
+            word-wrap: break-word;
+            line-height: 1.4;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .user-message .message-content {
+            background: linear-gradient(135deg, #2196F3, #1976D2);
+            color: white;
+        }
+
+        .bot-message .message-content {
+            background: white;
+            border: 1px solid #e0e0e0;
+            color: #333;
+        }
+
+        .room-list {
+            margin: 16px 0;
+            padding: 16px;
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            border-radius: 12px;
+            border: 1px solid #e9ecef;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05);
+        }
+
+        .room-item {
+            margin: 12px 0;
+            padding: 14px;
+            background: white;
+            border-radius: 10px;
+            border: 1px solid #dee2e6;
+            transition: all 0.2s ease;
+        }
+
+        .room-item:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: #4CAF50;
+        }
+
+        .room-name {
+            font-weight: 600;
+            color: #333;
+            font-size: 16px;
+        }
+
+        .room-price {
+            color: #4CAF50;
+            font-weight: 700;
+            margin: 6px 0;
+            font-size: 18px;
+        }
+
+        .room-features {
+            font-size: 13px;
+            color: #666;
+            font-weight: 500;
+        }
+
+        /* Enhanced Booking Confirmation Styles */
+        .booking-confirmation {
+            margin: 16px 0;
+            background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
+            border-radius: 16px;
+            border: 2px solid #4CAF50;
+            overflow: hidden;
+            box-shadow: 0 6px 20px rgba(76, 175, 80, 0.2);
+            animation: bookingSlideIn 0.5s ease-out;
+            max-width: none;
+        }
+
+        .booking-header {
+            background: linear-gradient(135deg, #4CAF50, #388e3c);
+            color: white;
+            padding: 20px;
+            text-align: center;
+            position: relative;
+        }
+
+        .booking-header::before {
+            content: '🎉';
+            position: absolute;
+            left: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+        }
+
+        .booking-header::after {
+            content: '🎉';
+            position: absolute;
+            right: 20px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 24px;
+        }
+
+        .booking-title {
+            font-size: 22px;
+            font-weight: 700;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .booking-body {
+            padding: 24px;
+            background: white;
+        }
+
+        .booking-id-section {
+            text-align: center;
+            margin-bottom: 24px;
+            padding-bottom: 20px;
+            border-bottom: 2px dashed #e0e0e0;
+        }
+
+        .booking-id-label {
+            font-size: 14px;
+            color: #666;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+        }
+
+        .booking-id {
+            background: linear-gradient(135deg, #4CAF50, #388e3c);
+            color: white;
+            padding: 12px 24px;
+            border-radius: 30px;
+            font-family: 'Courier New', monospace;
+            font-size: 18px;
+            font-weight: bold;
+            display: inline-block;
+            box-shadow: 0 4px 12px rgba(76, 175, 80, 0.3);
+            letter-spacing: 2px;
+        }
+
+        .booking-details {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+            margin-bottom: 20px;
+        }
+
+        .booking-detail {
+            background: #f8f9fa;
+            padding: 16px;
+            border-radius: 12px;
+            border-left: 4px solid #4CAF50;
+        }
+
+        .detail-label {
+            font-size: 12px;
+            color: #666;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            margin-bottom: 6px;
+        }
+
+        .detail-value {
+            font-size: 16px;
+            color: #333;
+            font-weight: 600;
+        }
+
+        .booking-summary {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            padding: 20px;
+            border-radius: 12px;
+            border: 1px solid #0ea5e9;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .summary-text {
+            color: #0369a1;
+            font-size: 16px;
+            font-weight: 600;
+            margin: 0;
+        }
+
+        .nights-highlight {
+            color: #4CAF50;
+            font-weight: 700;
+            font-size: 18px;
+        }
+
+        .booking-success {
+            margin: 16px 0;
+            padding: 24px;
+            background: linear-gradient(135deg, #e8f5e8, #f1f8e9);
+            border-radius: 12px;
+            border: 2px solid #4CAF50;
+            text-align: center;
+            box-shadow: 0 4px 16px rgba(76, 175, 80, 0.2);
+        }
+
+        .booking-success h3 {
+            color: #2e7d32;
+            margin-bottom: 12px;
+            font-size: 20px;
+            font-weight: 600;
+        }
+
+        .success-message {
+            color: #2e7d32;
+            font-size: 15px;
+            margin-top: 12px;
+            font-weight: 500;
+        }
+
+        .input-container {
+            padding: 20px;
+            background: white;
+            border-top: 1px solid #e0e0e0;
+        }
+
+        .input-wrapper {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        #messageInput {
+            flex: 1;
+            padding: 14px 18px;
+            border: 2px solid #e0e0e0;
+            border-radius: 25px;
+            outline: none;
+            font-size: 15px;
+            transition: all 0.2s ease;
+            background: #fafafa;
+        }
+
+        #messageInput:focus {
+            border-color: #4CAF50;
+            background: white;
+            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
+        }
+
+        #sendButton {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #4CAF50, #388e3c);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+            box-shadow: 0 3px 10px rgba(76, 175, 80, 0.3);
+        }
+
+        #sendButton:hover:not(:disabled) {
+            transform: translateY(-1px);
+            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        }
+
+        #sendButton:disabled {
+            background: #ccc;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        
+        #resetButtton {
+            padding: 14px 28px;
+            background: linear-gradient(135deg, #d54444, #c73939);
+            color: white;
+            border: none;
+            border-radius: 25px;
+            cursor: pointer;
+            font-size: 15px;
+            font-weight: 600;
+            transition: all 0.2s ease;
+        }
+
+
+        .typing {
+            font-style: italic;
+            color: #666;
+            padding: 12px 20px;
+            display: none;
+            font-size: 14px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 15px;
+            font-size: 13px;
+            color: #666;
+            background: linear-gradient(135deg, #f8f9fa, #ffffff);
+            border-top: 1px solid #e0e0e0;
+            font-weight: 500;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes bookingSlideIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        /* Mobile responsiveness */
+        @media (max-width: 768px) {
+            body {
+                padding: 10px;
+            }
+            
+            .container {
+                max-width: 100%;
+            }
+            
+            .header h1 {
+                font-size: 24px;
+            }
+            
+            .chat-container {
+                height: 450px;
+            }
+            
+            .message-content {
+                max-width: 85%;
+            }
+
+            .booking-details {
+                grid-template-columns: 1fr;
+                gap: 12px;
+            }
+
+            .booking-header::before,
+            .booking-header::after {
+                display: none;
+            }
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Hotel Booking Chatbot</h1>
+            <p>AI-Powered Room Reservation System</p>
+        </div>
+
+        <div class="chat-container">
+            <div class="chat-messages" id="chatMessages">
+                <div class="message bot-message">
+                    <div class="message-content">
+                        Welcome to our hotel booking system! I can help you book a room. Type "hello" to start.
+                    </div>
+                </div>
+            </div>
+
+            <div class="typing" id="typingIndicator">
+                Bot is typing...
+            </div>
+
+            <div class="input-container">
+                <div class="input-wrapper">
+                    <input type="text" id="messageInput" placeholder="Type your message..." autocomplete="off">
+                    <button onclick="sendMessage()" id="sendButton">Send</button>
+                    <button onclick="resetConversation()" id="resetButtton">Reset</button>
+                </div>
+            </div>
+        </div>
+
+        <div class="footer">
+            Hotel Booking System - Built with Rasa Framework
+        </div>
+    </div>
+
+    <script>
+        const chatMessages = document.getElementById('chatMessages');
+        const messageInput = document.getElementById('messageInput');
+        const sendButton = document.getElementById('sendButton');
+        const typingIndicator = document.getElementById('typingIndicator');
+
+        function addMessage(message, isUser = false, messageType = 'text', bookingData = null) {
+            const messageDiv = document.createElement('div');
+            messageDiv.classList.add('message');
+            messageDiv.classList.add(isUser ? 'user-message' : 'bot-message');
+
+            const messageContent = document.createElement('div');
+            messageContent.classList.add('message-content');
+
+            // Format different types of messages
+            let formattedMessage = message;
+
+            if (messageType === 'booking_confirmation' && bookingData) {
+                formattedMessage = formatDetailedBooking(bookingData);
+            }
+            // Format room listings
+            else if (message.includes('Here are our available rooms') || message.includes('Standard Room')) {
+                formattedMessage = formatRoomList(message);
+            }
+            // Regular messages
+            else {
+                formattedMessage = message.replace(/\n/g, '<br>');
+            }
+
+            messageContent.innerHTML = formattedMessage;
+            messageDiv.appendChild(messageContent);
+            chatMessages.appendChild(messageDiv);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function formatDetailedBooking(bookingData) {
+            return `
+                <div class="booking-confirmation">
+                    <div class="booking-header">
+                        <h2 class="booking-title">Booking Confirmed!</h2>
+                    </div>
+                    <div class="booking-body">
+                        <div class="booking-id-section">
+                            <div class="booking-id-label">Confirmation Number</div>
+                            <div class="booking-id">${bookingData.booking_id || 'GH0000'}</div>
+                        </div>
+                        <div class="booking-details">
+                            <div class="booking-detail">
+                                <div class="detail-label">Guest Name</div>
+                                <div class="detail-value">${bookingData.guest_name || 'N/A'}</div>
+                            </div>
+                            <div class="booking-detail">
+                                <div class="detail-label">Room Type</div>
+                                <div class="detail-value">${bookingData.room_type || 'N/A'}</div>
+                            </div>
+                            <div class="booking-detail">
+                                <div class="detail-label">Number of Guests</div>
+                                <div class="detail-value">${bookingData.guests || 'N/A'} guest(s)</div>
+                            </div>
+                            <div class="booking-detail">
+                                <div class="detail-label">Check-in Date</div>
+                                <div class="detail-value">${bookingData.checkin_date || 'N/A'}</div>
+                            </div>
+                            <div class="booking-detail">
+                                <div class="detail-label">Check-out Date</div>
+                                <div class="detail-value">${bookingData.checkout_date || 'N/A'}</div>
+                            </div>
+                        </div>
+                        <div class="booking-summary">
+                            <p class="summary-text">
+                                Total Stay: <span class="nights-highlight">${bookingData.nights || 'N/A'} night(s)</span>
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                <div style="text-align: center; color: #4CAF50; font-weight: 600; margin-top: 16px;">
+                    Thank you for choosing Grand Hotel!
+                </div>
+            `;
+        }
+
+        function formatRoomList(message) {
+            return `
+                <div>Available Rooms:</div>
+                <div class="room-list">
+                    <div class="room-item">
+                        <div class="room-name">Standard Room</div>
+                        <div class="room-price">$100/night</div>
+                        <div class="room-features">WiFi, TV, AC</div>
+                    </div>
+                    <div class="room-item">
+                        <div class="room-name">Deluxe Room</div>
+                        <div class="room-price">$150/night</div>
+                        <div class="room-features">WiFi, TV, AC, Mini-bar</div>
+                    </div>
+                    <div class="room-item">
+                        <div class="room-name">Family Room</div>
+                        <div class="room-price">$180/night</div>
+                        <div class="room-features">WiFi, TV, AC, Extra bed</div>
+                    </div>
+                    <div class="room-item">
+                        <div class="room-name">Suite</div>
+                        <div class="room-price">$250/night</div>
+                        <div class="room-features">WiFi, TV, AC, Living area, Balcony</div>
+                    </div>
+                </div>
+                <div>Which room would you like to book?</div>
+            `;
+        }
+
+        function showTyping() {
+            typingIndicator.style.display = 'block';
+        }
+
+        function hideTyping() {
+            typingIndicator.style.display = 'none';
+        }
+
+        async function sendMessage() {
+            const message = messageInput.value.trim();
+            if (!message) return;
+
+            addMessage(message, true);
+            messageInput.value = '';
+
+            sendButton.disabled = true;
+            messageInput.disabled = true;
+            showTyping();
+
+            try {
+                const response = await fetch('/chat', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({
+                        message: message,
+                        sender: 'user_' + Date.now()
+                    })
+                });
+
+                const data = await response.json();
+
+                setTimeout(() => {
+                    hideTyping();
+                    addMessage(
+                        data.response, 
+                        false, 
+                        data.type || 'text', 
+                        data.booking_data || null
+                    );
+
+                    sendButton.disabled = false;
+                    messageInput.disabled = false;
+                    messageInput.focus();
+                }, 1000);
+
+            } catch (error) {
+                hideTyping();
+                addMessage('Sorry, there was an error connecting to the chatbot.');
+                sendButton.disabled = false;
+                messageInput.disabled = false;
+            }
+        }
+
+        async function resetConversation() {
+            try {
+                const response = await fetch('/reset', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    }
+                });
+
+                if (response.ok) {
+                    // Clear the chat messages
+                    chatMessages.innerHTML = `
+                        <div class="message bot-message">
+                            <div class="message-content">
+                                Welcome to our hotel booking system! I can help you book a room. Type "hello" to start.
+                            </div>
+                        </div>
+                    `;
+                    messageInput.focus();
+                }
+            } catch (error) {
+                console.error('Reset error:', error);
+            }
+        }
+
+        messageInput.addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') {
+                sendMessage();
+            }
+        });
+
+        window.onload = function () {
+            messageInput.focus();
+        };
+    </script>
+</body>
+
+</html>

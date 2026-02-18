@@ -1,0 +1,146 @@
+version: "3.1"
+
+nlu:
+- intent: greet
+  examples: |
+    - hello
+    - hi
+    - hey
+    - good morning
+    - start
+    - book a room
+
+- intent: inform
+  examples: |
+    - John Smith
+    - Sarah
+    - Mike
+    - Lisa
+    - David
+    - Emma
+    - Bhavya
+    - Priya
+    - Rahul
+    - Anjali
+    - Vikram
+    - Shreya
+    - Arjun
+    - Meera
+    - Rohan
+    - Kavya
+    - Aditya
+    - Riya
+    - Sanjay
+    - Pooja
+    - Alex
+    - Maria
+    - James
+    - Jennifer
+    - Robert
+    - Linda
+    - William
+    - Elizabeth
+    - Richard
+    - Susan
+    - Thomas
+    - Jessica
+    - Christopher
+    - Amanda
+    - Daniel
+    - Ashley
+    - Matthew
+    - Emily
+    - Anthony
+    - Michelle
+    - Mark
+    - Kimberly
+    - Steven
+    - Amy
+    - Andrew
+    - Angela
+    - Joshua
+    - Helen
+    - Kenneth
+    - Deborah
+    - Paul
+    - Dorothy
+    - Jonathan
+    - Lisa
+    - Larry
+    - Nancy
+    - my name is John
+    - I am Sarah
+    - call me Mike
+    - 20/9/2025
+    - 21/9/2025
+    - 22/9/2025
+    - 23/9/2025
+    - 24/9/2025
+    - 25/9/2025
+    - September 20
+    - September 21
+    - September 22
+    - September 23
+    - sep 20
+    - sep 21
+    - sep 22
+    - sep 23
+    - august 20
+    - august 21
+    - oct 15
+    - october 15
+    - 20-9-2025
+    - 21-9-2025
+    - 22-9-2025
+    - 23-9-2025
+    - 1 guest
+    - 2 guests
+    - 3 guests
+    - 4 guests
+    - 5 guests
+    - 6 guests
+    - 1
+    - 2
+    - 3
+    - 4
+    - 5
+    - 6
+    - one
+    - two
+    - three
+    - four
+    - five
+    - six
+    - two guests
+    - three people
+    - four people
+    - party of 2
+    - party of 3
+    - standard room
+    - deluxe room
+    - family room
+    - suite
+    - standard
+    - deluxe
+    - family
+    - luxury
+    - premium
+    - executive
+    - basic room
+    - large room
+    - I want standard
+    - I want deluxe
+    - I choose suite
+    - I'll take family
+    - book standard
+    - book deluxe
+
+- intent: goodbye
+  examples: |
+    - goodbye
+    - bye
+    - thanks bye
+    - see you later
+    - farewell
+    - good bye
+    - thank you goodbye

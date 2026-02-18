@@ -1,0 +1,18 @@
+version: "3.1"
+
+rules:
+
+- rule: Start booking on greeting
+  steps:
+  - intent: greet
+  - action: utter_greet
+
+- rule: Process any user input
+  steps:
+  - intent: inform
+  - action: action_collect_booking_info
+
+- rule: Restart conversation
+  steps:
+  - intent: restart
+  - action: action_restart

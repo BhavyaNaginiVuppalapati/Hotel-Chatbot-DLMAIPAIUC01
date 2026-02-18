@@ -1,0 +1,49 @@
+version: "3.1"
+
+intents:
+  - greet
+  - inform
+  - goodbye
+  - restart
+
+entities: []
+
+slots:
+  guest_name:
+    type: text
+    influence_conversation: false
+    mappings: []
+  
+  checkin_date:
+    type: text
+    influence_conversation: false
+    mappings: []
+  
+  checkout_date:
+    type: text
+    influence_conversation: false
+    mappings: []
+  
+  number_of_guests:
+    type: text
+    influence_conversation: false
+    mappings: []
+
+  room_type:
+    type: text
+    influence_conversation: false
+    mappings: []
+
+responses:
+  utter_greet:
+  - text: "Welcome to Grand Hotel! I'll help you book a room. What's your name?"
+
+  utter_goodbye:
+  - text: "Thank you for choosing Grand Hotel! Have a great day!"
+
+actions:
+  - action_collect_booking_info
+
+session_config:
+  session_expiration_time: 60
+  carry_over_slots_to_new_session: true
