@@ -94,13 +94,14 @@ PyJWT==2.10.1
 pykwalify==1.8.0
 pymongo==4.3.3
 pyparsing==3.2.3
-pyreadline3==3.5.4
+pyreadline3==3.5.4; platform_system=="Windows"
 pyrsistent==0.20.0
 python-crfsuite==0.9.11
 python-dateutil==2.8.2
 python-engineio==4.12.2
 python-socketio==5.13.0
 pytz==2022.7.1
+pywin32==311; platform_system=="Windows"
 PyYAML==6.0.2
 questionary==1.10.0
 randomname==0.1.5
@@ -134,9 +135,10 @@ tabulate==0.9.0
 tarsafe==0.0.4
 tensorboard==2.12.3
 tensorboard-data-server==0.7.2
+tensorflow==2.12.0
 tensorflow-estimator==2.12.0
 tensorflow-hub==0.13.0
-tensorflow-intel==2.12.0
+tensorflow-intel==2.12.0; platform_system=="Windows"
 tensorflow-io-gcs-filesystem==0.31.0
 termcolor==3.1.0
 terminaltables==3.1.10
